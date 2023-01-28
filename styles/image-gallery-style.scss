@@ -1,0 +1,29 @@
+@import 'colors';
+
+.image-gallery-thumbnail {
+  &:hover {
+    border: 4px solid $color-secondary-yellow !important;
+  }
+  width: 120px;
+  height: 96px;
+  border-radius: 8px;
+  opacity: 0.75;
+}
+
+.image-gallery-thumbnail.active {
+  border: 4px solid $color-secondary-yellow !important;
+  opacity: 1;
+}
+
+.image-gallery-bullet {
+  width: 4px !important;
+  height: 4px !important;
+  background: rgba(29, 29, 29, 0.5) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.image-gallery-bullet.active {
+  background: #fff !important;
+  transform: none !important;
+}
