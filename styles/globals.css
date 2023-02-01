@@ -1,0 +1,30 @@
+
+
+.center-box {
+  text-align: center;
+  margin-left: 35%;
+  margin-right: 35%;
+  margin-top: 20%;
+  padding: 20px;
+}
+
+.button-find {
+  width: auto;
+  height: 50px;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+  padding: 21px 77px;
+  
+}
+
+.button-find:hover {
+  background-color: #cdcdcd;
+  color: white;
+
+}
+
+.search-bar{
+
+  
+}
+
+

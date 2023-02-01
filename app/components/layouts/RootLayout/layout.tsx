@@ -1,7 +1,4 @@
-import dynamic from "next/dynamic";
-
 import { Container, ContainerProps } from "@chakra-ui/react";
-import { AppProps } from "next/app";
 
 interface Props extends ContainerProps {
   children: React.ReactNode;
