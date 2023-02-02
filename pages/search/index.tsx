@@ -27,6 +27,7 @@ export default function Search() {
         <div className="search-container">
           <SearchBar
             onSearchTextChange={function (searchText: string): void {}}
+            initSearchText={searchText as string}
           ></SearchBar>
           <Button
             colorScheme="black"

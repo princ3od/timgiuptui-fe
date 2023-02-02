@@ -4,6 +4,7 @@ import React, { useState } from "react";
 
 interface Props {
   onSearchTextChange: (searchText: string) => void;
+  initSearchText?: string;
 }
 
 const SearchBar = (pageProps: Props) => {
@@ -16,6 +17,7 @@ const SearchBar = (pageProps: Props) => {
         type="search"
         placeholder="Enter search text here.."
         size="lg"
+        value={pageProps.initSearchText}
         onChange={(event) => pageProps.onSearchTextChange(event.target.value)}
       />
     </InputGroup>
