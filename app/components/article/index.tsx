@@ -9,7 +9,11 @@ import {
   Button,
   Image,
   Text,
+  Tag,
+  TagLabel,
+  HStack,
 } from "@chakra-ui/react";
+import article from "model/article";
 import Article from "model/article";
 
 interface Props {
@@ -17,38 +21,34 @@ interface Props {
 }
 
 const ArticleCard = (pageProps: Props) => {
+  const article: Article = pageProps.article;
+
   return (
-    <Card maxW="sm">
-      <CardBody>
+    <div className="article-container">
+      <div className="left-content">
         <Image
-          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-          alt="Green double couch with wooden legs"
-          borderRadius="lg"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4V01Y1amBAvidgs0Ul28s_f52e5VMhR92gTS-zn3yzxe2ybw8D5-CQnH9YHKmD1N4new&usqp=CAU"
+          alt="ArticleCard  image"
         />
-        <Stack mt="6" spacing="3">
-          <Heading size="md">Living room Sofa</Heading>
-          <Text>
-            This sofa is perfect for modern tropical spaces, baroque inspired
-            spaces, earthy toned spaces and for people who love a chic design
-            with a sprinkle of vintage design.
-          </Text>
-          <Text color="blue.600" fontSize="2xl">
-            $450
-          </Text>
-        </Stack>
-      </CardBody>
-      <Divider />
-      <CardFooter>
-        <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="blue">
-            Buy now
-          </Button>
-          <Button variant="ghost" colorScheme="blue">
-            Add to cart
-          </Button>
-        </ButtonGroup>
-      </CardFooter>
-    </Card>
+      </div>
+
+      <div className="right-content">
+        <div className="article-scroll-area">
+          <h3>{article.title} </h3>
+          <p>{article.content}</p>
+        </div>
+
+        <div className="tags-container">
+          <HStack spacing={4}>
+            {article.topic.map((topic) => (
+              <Tag size="md" key={`${topic}`} variant="subtle">
+                <TagLabel>{`${topic}`}</TagLabel>
+              </Tag>
+            ))}
+          </HStack>
+        </div>
+      </div>
+    </div>
   );
 };
 
