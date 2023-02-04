@@ -20,8 +20,8 @@ const theme = extendTheme(
           lineHeight: '42px',
         },
         h3:{
-          fontSize: '16px',
-          fontWeight: '400',
+          fontSize: '18px',
+          fontWeight: '700',
           lineHeight: '21px',
         },
         

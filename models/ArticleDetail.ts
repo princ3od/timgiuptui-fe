@@ -1,8 +1,5 @@
-import { type } from "os";
 
-
-
-type Article = {
+interface ArticleDetail  {
     id: String;
     accessedDate: String;
     author: String;
@@ -11,13 +8,13 @@ type Article = {
     description: String;
     domain: String;
     readTimeMinutes: Number;
-    similarArticles: Array<Article>;
+    similarArticles: Array<ArticleDetail>;
     source: String;
     thumbnail: String;
     title: String;
-    topic: String;
+    topic: Array<String>;
     url: String;
 
 }
 
-export default Article;
+export default ArticleDetail;

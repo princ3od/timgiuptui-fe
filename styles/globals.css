@@ -32,15 +32,11 @@
 
 }
 
-.content-container{
-  /* min-width: 882px; */
-}
-
 .page-container{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+
 }
 
 .filter-container{
@@ -79,4 +75,9 @@
   overflow-y: scroll;
   max-height: 153px;
 
+}
+
+.search-content{
+  min-width: 855px;
+  padding-bottom: 24px;
 }

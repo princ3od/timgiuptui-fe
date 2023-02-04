@@ -15,11 +15,54 @@ import {
 } from "@chakra-ui/react";
 import ArticleCard from "@components/article";
 import SearchBar from "@components/search";
+import ArticleService from "app/apis/ArticleService";
+import Article from "models/Article";
 import { useRouter } from "next/router";
-import articles from "../../mock/articles";
+import { useEffect, useState } from "react";
 export default function Search() {
   const router = useRouter();
   const { searchText } = router.query;
+  const articleService = ArticleService;
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    articleService.searchArticles(searchText as string).then((res) => {
+      setArticles(res);
+    });
+  }, [articleService, searchText]);
+
+  const sourcesOptionBuilder = (articles: Article[]) => {
+    let sources: string[] = [];
+    articles.forEach((article) => {
+      if (!sources.includes(article.source)) {
+        sources.push(article.source);
+      }
+    });
+    return sources.map((source) => {
+      return (
+        <option value={source} key={source}>
+          {source}
+        </option>
+      );
+    });
+  };
+
+  const topicsOptionBuilder = (articles: Article[]) => {
+    let topics: string[] = [];
+    articles.forEach((article) => {
+      if (!topics.includes(article.topic)) {
+        topics.push(article.topic);
+      }
+    });
+    return topics.map((topic) => {
+      return (
+        <option value={topic} key={topic}>
+          {topic}
+        </option>
+      );
+    });
+  };
+
   return (
     <div className="page-container">
       <div className="content-container">
@@ -43,15 +86,11 @@ export default function Search() {
         <div className="filter-container">
           <Box display="flex">
             <Select placeholder="Nguồn báo">
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {sourcesOptionBuilder(articles)}
             </Select>
             <Box w="19px"></Box>
             <Select placeholder="Chủ đề">
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {topicsOptionBuilder(articles)}
             </Select>
           </Box>
 
@@ -63,11 +102,16 @@ export default function Search() {
             </Select>
           </Box>
         </div>
-
-        <ArticleCard article={articles[0]}></ArticleCard>
-        <ArticleCard article={articles[0]}></ArticleCard>
-        <ArticleCard article={articles[0]}></ArticleCard>
-        <ArticleCard article={articles[0]}></ArticleCard>
+        <div className="search-content">
+          {articles.map((article) => {
+            return (
+              <ArticleCard
+                article={article}
+                key={`${article.id}`}
+              ></ArticleCard>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
