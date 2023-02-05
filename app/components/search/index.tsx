@@ -17,7 +17,7 @@ const SearchBar = (pageProps: Props) => {
       </InputLeftElement>
       <Input
         type="search"
-        placeholder="Enter search text here.."
+        placeholder="Nhập tin bạn muốn tìm kiếm..."
         size="lg"
         defaultValue={pageProps.initSearchText}
         onChange={(event) => pageProps.onSearchTextChange(event.target.value)}
