@@ -1,12 +1,14 @@
-import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import { PhoneIcon, SearchIcon } from "@chakra-ui/icons";
-import SearchBar from "@components/search";
-import Router from "next/router";
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
+import Router from 'next/router';
+
+import { Button } from '@chakra-ui/react';
+
+import SearchBar from '@components/search';
 
 export default function Home() {
-  const [searchText, setSearchText] = useState("");
-  const handleSearch = (searchText: String) => {
+  const [searchText, setSearchText] = useState('');
+  const handleSearch = (searchText: string) => {
     Router.push(`/search?searchText=${searchText}`);
   };
 

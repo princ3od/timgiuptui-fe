@@ -1,6 +1,7 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
-import React from "react";
+import React from 'react';
+
+import { SearchIcon } from '@chakra-ui/icons';
+import { InputGroup, InputLeftElement, Input } from '@chakra-ui/react';
 
 interface Props {
   onSearchTextChange: (searchText: string) => void;

@@ -1,6 +1,8 @@
-import { Image, Tag, TagLabel, HStack } from "@chakra-ui/react";
-import Article from "models/Article";
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
+
+import { Image } from '@chakra-ui/react';
+
+import Article from 'models/Article';
 
 interface Props {
   article: Article;
@@ -48,7 +50,7 @@ const ArticleCard = (pageProps: Props) => {
                 fill="#484848"
               />
             </svg>
-            <h4>Xem tin ({article.timeToRead ?? 1} phút đọc)</h4>
+            <h4>Xem tin ({article.timeReadMinutes ?? 1} phút đọc)</h4>
           </div>
 
           {isExpanded && (

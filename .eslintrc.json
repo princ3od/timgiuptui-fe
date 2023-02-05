@@ -1,3 +1,46 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next", "next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "quotes": ["error", "single"],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+    "@typescript-eslint/padding-line-between-statements": ["error", { "blankLine": "always", "prev": "interface", "next": "const" }],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "next/*",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "{@styles/*,*.scss}",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{@redux/*,@hooks/*,@contexts/*}",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react", "dayjs"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "warnOnUnassignedImports": true
+      }
+    ]
+  }
 }
