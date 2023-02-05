@@ -155,7 +155,7 @@ export default function Search() {
           </Box>
 
           <Box>
-            <Select placeholder="Liên quan">{buildRelevantSearch()}</Select>
+            <Select placeholder="Sắp xếp">{buildRelevantSearch()}</Select>
           </Box>
         </div>
         <div className="search-content">
