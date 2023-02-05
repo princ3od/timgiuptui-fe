@@ -8,6 +8,7 @@ interface Article  {
     description: string;
     thumbnail: string;
     date: string;
+    relatedArticles: Array<Article>;
 }
 
 export default Article;

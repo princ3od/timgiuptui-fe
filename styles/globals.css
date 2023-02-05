@@ -65,10 +65,17 @@
   min-width: 128px;
 }
 
-.tags-container{
-  display: flex;
+.expand-container{
+  display: inline-block;
   margin-top: 17px; 
   gap: 20px ;
+}
+
+.expandable-area{
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .article-scroll-area{
@@ -80,4 +87,24 @@
 .search-content{
   min-width: 855px;
   padding-bottom: 24px;
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 14px;
+}
+
+.expanded-content{
+
+}
+
+.expanded-content h2{
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 21px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }

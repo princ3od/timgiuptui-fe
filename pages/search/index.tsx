@@ -1,44 +1,67 @@
-import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Select,
-  Image,
-  Tag,
-  HStack,
-  TagLabel,
-  TagLeftIcon,
-} from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { Box, Button, Select } from "@chakra-ui/react";
 import ArticleCard from "@components/article";
 import SearchBar from "@components/search";
-import ArticleService from "app/apis/ArticleService";
+import PlatformService from "app/apis/PlatformService";
+import SearchService from "app/apis/SearchService";
+
 import Article from "models/Article";
+import Source from "models/Source";
+import Topic from "models/Topic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 export default function Search() {
   const router = useRouter();
+
   const { searchText } = router.query;
-  const articleService = ArticleService;
+
+  const [searchTextState, setSearchText] = useState<string>(
+    searchText as string
+  );
+  const searchArticleService = SearchService;
   const [articles, setArticles] = useState<Article[]>([]);
+  const [page, setPage] = useState(1);
+  const pageLimit = 5;
+  const articlePerPage = 10;
+
+  const platformService = PlatformService;
+  const [topics, setTopics] = useState<Topic[]>([]);
+
+  const [source, setSource] = useState<Source[]>([]);
 
   useEffect(() => {
-    articleService.searchArticles(searchText as string).then((res) => {
-      setArticles(res);
+    platformService.getSources().then((res) => {
+      setSource(res);
     });
-  }, [articleService, searchText]);
+  }, [platformService]);
 
-  const sourcesOptionBuilder = (articles: Article[]) => {
-    let sources: string[] = [];
-    articles.forEach((article) => {
-      if (!sources.includes(article.source)) {
-        sources.push(article.source);
+  useEffect(() => {
+    platformService.getTopics().then((res) => {
+      setTopics(res);
+    });
+  }, [platformService]);
+
+  useEffect(() => {
+    searchArticleService
+      .searchArticles(searchTextState as string)
+      .then((res) => {
+        setArticles(res);
+      });
+  }, [searchTextState, searchArticleService]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
+
+  const sourcesOptionBuilder = (sources: Source[]) => {
+    let sourcesOption: string[] = [];
+    sources.forEach((source) => {
+      if (!sourcesOption.includes(source.name)) {
+        sourcesOption.push(source.name);
       }
     });
-    return sources.map((source) => {
+
+    return sourcesOption.map((source) => {
       return (
         <option value={source} key={source}>
           {source}
@@ -47,17 +70,54 @@ export default function Search() {
     });
   };
 
-  const topicsOptionBuilder = (articles: Article[]) => {
-    let topics: string[] = [];
-    articles.forEach((article) => {
-      if (!topics.includes(article.topic)) {
-        topics.push(article.topic);
+  const handleSearchTextChange = (newText: string) => {
+    if (newText !== searchTextState) {
+      setSearchText(newText);
+      setPage(1);
+    }
+  };
+
+  const topicsOptionBuilder = (topicArray: Topic[]) => {
+    let topicsOption: string[] = [];
+    topicArray.forEach((topic) => {
+      if (!topicsOption.includes(topic.name)) {
+        topicsOption.push(topic.name);
       }
     });
-    return topics.map((topic) => {
+    return topicsOption.map((topic) => {
       return (
         <option value={topic} key={topic}>
           {topic}
+        </option>
+      );
+    });
+  };
+
+  const buildPagination = (pageCount: number, pageLimit: number) => {
+    let pagination = [];
+    for (let i = 1; i <= pageLimit && i <= pageCount; i++) {
+      pagination.push(
+        <Button
+          colorScheme="black"
+          size="md"
+          variant="outline"
+          className="button-page"
+          onClick={() => setPage(i)}
+          {...(i === page ? { backgroundColor: "#52b6e7" } : {})}
+        >
+          <h3>{i}</h3>
+        </Button>
+      );
+    }
+    return pagination;
+  };
+
+  const buildRelevantSearch = () => {
+    const relevantSearch: string[] = ["Liên quan", "Mới nhất ", "Cũ nhất"];
+    return relevantSearch.map((search) => {
+      return (
+        <option key={search} value={search}>
+          {search}
         </option>
       );
     });
@@ -69,7 +129,7 @@ export default function Search() {
         <h1 className="search-title">Tìm giúp tui</h1>
         <div className="search-container">
           <SearchBar
-            onSearchTextChange={function (searchText: string): void {}}
+            onSearchTextChange={handleSearchTextChange}
             initSearchText={searchText as string}
           ></SearchBar>
           <Button
@@ -86,31 +146,49 @@ export default function Search() {
         <div className="filter-container">
           <Box display="flex">
             <Select placeholder="Nguồn báo">
-              {sourcesOptionBuilder(articles)}
+              {sourcesOptionBuilder(source)}
             </Select>
             <Box w="19px"></Box>
-            <Select placeholder="Chủ đề">
-              {topicsOptionBuilder(articles)}
-            </Select>
+            <Select placeholder="Chủ đề">{topicsOptionBuilder(topics)}</Select>
           </Box>
 
           <Box>
-            <Select placeholder="Liên quan">
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </Select>
+            <Select placeholder="Liên quan">{buildRelevantSearch()}</Select>
           </Box>
         </div>
         <div className="search-content">
-          {articles.map((article) => {
-            return (
-              <ArticleCard
-                article={article}
-                key={`${article.id}`}
-              ></ArticleCard>
-            );
-          })}
+          {articles
+            .slice((page - 1) * articlePerPage, page * articlePerPage)
+            .map((article) => {
+              return (
+                <ArticleCard
+                  article={article}
+                  key={`${article.id}`}
+                ></ArticleCard>
+              );
+            })}
+        </div>
+
+        <div className="pagination">
+          <Button
+            onClick={() => {
+              if (page > 1) {
+                setPage(page - 1);
+              }
+            }}
+          >
+            <ChevronLeftIcon />
+          </Button>
+          {buildPagination(articles.length / articlePerPage, pageLimit)}
+          <Button
+            onClick={() => {
+              if (page < articles.length / articlePerPage) {
+                setPage(page + 1);
+              }
+            }}
+          >
+            <ChevronRightIcon />
+          </Button>
         </div>
       </div>
     </div>
