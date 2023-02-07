@@ -1,21 +1,22 @@
+import { useEffect, useState } from 'react';
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Button, Select } from "@chakra-ui/react";
-import ArticleCard from "@components/article";
-import SearchBar from "@components/search";
-import PlatformService from "app/apis/PlatformService";
-import SearchService from "app/apis/SearchService";
-import Article from "models/Article";
-import Source from "models/Source";
-import Topic from "models/Topic";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-function Search() {
+import { useRouter } from 'next/router';
+
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Box, Button, Select } from '@chakra-ui/react';
+
+import ArticleCard from '@components/article';
+import SearchBar from '@components/search';
+import PlatformService from 'app/apis/PlatformService';
+import SearchService from 'app/apis/SearchService';
+import Article from 'models/Article';
+import Source from 'models/Source';
+import Topic from 'models/Topic';
+
+const Search = () => {
   const router = useRouter();
   const { searchText } = router.query;
-  const [searchTextState, setSearchText] = useState<string>(
-    searchText as string
-  );
+  const [searchTextState, setSearchText] = useState<string>(searchText as string);
   const [articles, setArticles] = useState<Article[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
@@ -36,6 +37,11 @@ function Search() {
       setTopics(res);
     };
 
+    getSource();
+    getTopic();
+  }, []);
+
+  useEffect(() => {
     const getArticles = async () => {
       const res = await SearchService.searchArticles(searchTextState as string);
       const { results, hasMoreArticle } = res;
@@ -44,8 +50,6 @@ function Search() {
       }
       setArticles((results ?? []) as Article[]);
     };
-    getSource();
-    getTopic();
     getArticles();
   }, [searchTextState, hasMore]);
 
@@ -106,7 +110,7 @@ function Search() {
           {...(i === page ? { backgroundColor: '#52b6e7' } : {})}
         >
           <h3>{i}</h3>
-        </Button>
+        </Button>,
       );
     }
     return pagination;
@@ -127,26 +131,15 @@ function Search() {
       <div className="content-container">
         <h1 className="search-title">Tìm giúp tui</h1>
         <div className="search-container">
-          <SearchBar
-            onSearchTextChange={handleSearchTextChange}
-            initSearchText={searchText as string}
-          ></SearchBar>
-          <Button
-            colorScheme="black"
-            size="md"
-            variant="none"
-            className="button-find"
-            ml="32px"
-          >
+          <SearchBar onSearchTextChange={handleSearchTextChange} initSearchText={searchText as string}></SearchBar>
+          <Button colorScheme="black" size="md" variant="none" className="button-find" ml="32px">
             <h3>Tìm kiếm</h3>
           </Button>
         </div>
 
         <div className="filter-container">
           <Box display="flex">
-            <Select placeholder="Nguồn báo">
-              {sourcesOptionBuilder(source)}
-            </Select>
+            <Select placeholder="Nguồn báo">{sourcesOptionBuilder(source)}</Select>
             <Box w="19px"></Box>
             <Select placeholder="Chủ đề">{topicsOptionBuilder(topics)}</Select>
           </Box>
@@ -156,16 +149,9 @@ function Search() {
           </Box>
         </div>
         <div className="search-content">
-          {articles
-            .slice((page - 1) * articlePerPage, page * articlePerPage)
-            .map((article) => {
-              return (
-                <ArticleCard
-                  article={article}
-                  key={`${article.id}`}
-                ></ArticleCard>
-              );
-            })}
+          {articles.slice((page - 1) * articlePerPage, page * articlePerPage).map((article) => {
+            return <ArticleCard article={article} key={`${article.id}`}></ArticleCard>;
+          })}
         </div>
 
         <div className="pagination">
@@ -192,7 +178,7 @@ function Search() {
       </div>
     </div>
   );
-}
+};
 
 Search.getInitialProps = async (ctx: { query: { searchText: string } }) => {
   const { searchText } = ctx.query;

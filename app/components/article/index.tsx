@@ -1,11 +1,8 @@
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-} from "@chakra-ui/icons";
-import { Image } from "@chakra-ui/react";
-import Article from "models/Article";
-import { useState } from "react";
+import { useState } from 'react';
+
+import { Image } from '@chakra-ui/react';
+
+import Article from 'models/Article';
 
 interface Props {
   article: Article;
@@ -16,7 +13,6 @@ const ArticleCard = (pageProps: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handelClickEvent = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     setIsExpanded(!isExpanded);
   };
