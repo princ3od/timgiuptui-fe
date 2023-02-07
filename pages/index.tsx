@@ -1,5 +1,4 @@
-import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import { PhoneIcon, SearchIcon } from "@chakra-ui/icons";
+import { Button } from "@chakra-ui/react";
 import SearchBar from "@components/search";
 import Router from "next/router";
 import React, { useState } from "react";

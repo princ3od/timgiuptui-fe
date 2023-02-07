@@ -10,44 +10,44 @@ import Source from "models/Source";
 import Topic from "models/Topic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-export default function Search() {
+function Search() {
   const router = useRouter();
-
   const { searchText } = router.query;
-
   const [searchTextState, setSearchText] = useState<string>(
     searchText as string
   );
-  const searchArticleService = SearchService;
   const [articles, setArticles] = useState<Article[]>([]);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
   const [page, setPage] = useState(1);
   const pageLimit = 5;
   const articlePerPage = 10;
-
-  const platformService = PlatformService;
   const [topics, setTopics] = useState<Topic[]>([]);
-
   const [source, setSource] = useState<Source[]>([]);
 
   useEffect(() => {
-    platformService.getSources().then((res) => {
+    const getSource = async () => {
+      const res = await PlatformService.getSources();
       setSource(res);
-    });
-  }, [platformService]);
+    };
 
-  useEffect(() => {
-    platformService.getTopics().then((res) => {
+    const getTopic = async () => {
+      const res = await PlatformService.getTopics();
       setTopics(res);
-    });
-  }, [platformService]);
+    };
 
-  useEffect(() => {
-    searchArticleService
-      .searchArticles(searchTextState as string)
-      .then((res) => {
-        setArticles(res);
-      });
-  }, [searchTextState, searchArticleService]);
+    const getArticles = async () => {
+      const res = await SearchService.searchArticles(searchTextState as string);
+      const { results, hasMoreArticle } = res;
+      if (hasMore != hasMoreArticle) {
+        setHasMore(hasMoreArticle);
+      }
+      setArticles((results ?? []) as Article[]);
+    };
+    getSource();
+    getTopic();
+    getArticles();
+  }, [searchTextState, hasMore]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -69,11 +69,11 @@ export default function Search() {
       );
     });
   };
-
   const handleSearchTextChange = (newText: string) => {
     if (newText !== searchTextState) {
       setSearchText(newText);
       setPage(1);
+      router.push(`/search?searchText=${newText}`);
     }
   };
 
@@ -111,7 +111,6 @@ export default function Search() {
     }
     return pagination;
   };
-
   const buildRelevantSearch = () => {
     const relevantSearch: string[] = ["Liên quan", "Mới nhất ", "Cũ nhất"];
     return relevantSearch.map((search) => {
@@ -194,3 +193,10 @@ export default function Search() {
     </div>
   );
 }
+
+Search.getInitialProps = async (ctx: { query: { searchText: string } }) => {
+  const { searchText } = ctx.query;
+  return { searchText };
+};
+
+export default Search;
