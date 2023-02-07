@@ -1,10 +1,10 @@
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Button, Select } from "@chakra-ui/react";
 import ArticleCard from "@components/article";
 import SearchBar from "@components/search";
 import PlatformService from "app/apis/PlatformService";
 import SearchService from "app/apis/SearchService";
-
 import Article from "models/Article";
 import Source from "models/Source";
 import Topic from "models/Topic";
@@ -54,7 +54,7 @@ function Search() {
   }, [page]);
 
   const sourcesOptionBuilder = (sources: Source[]) => {
-    let sourcesOption: string[] = [];
+    const sourcesOption: string[] = [];
     sources.forEach((source) => {
       if (!sourcesOption.includes(source.name)) {
         sourcesOption.push(source.name);
@@ -78,7 +78,7 @@ function Search() {
   };
 
   const topicsOptionBuilder = (topicArray: Topic[]) => {
-    let topicsOption: string[] = [];
+    const topicsOption: string[] = [];
     topicArray.forEach((topic) => {
       if (!topicsOption.includes(topic.name)) {
         topicsOption.push(topic.name);
@@ -94,7 +94,7 @@ function Search() {
   };
 
   const buildPagination = (pageCount: number, pageLimit: number) => {
-    let pagination = [];
+    const pagination = [];
     for (let i = 1; i <= pageLimit && i <= pageCount; i++) {
       pagination.push(
         <Button
@@ -103,7 +103,7 @@ function Search() {
           variant="outline"
           className="button-page"
           onClick={() => setPage(i)}
-          {...(i === page ? { backgroundColor: "#52b6e7" } : {})}
+          {...(i === page ? { backgroundColor: '#52b6e7' } : {})}
         >
           <h3>{i}</h3>
         </Button>
@@ -112,7 +112,7 @@ function Search() {
     return pagination;
   };
   const buildRelevantSearch = () => {
-    const relevantSearch: string[] = ["Liên quan", "Mới nhất ", "Cũ nhất"];
+    const relevantSearch: string[] = ['Liên quan', 'Mới nhất ', 'Cũ nhất'];
     return relevantSearch.map((search) => {
       return (
         <option key={search} value={search}>
@@ -152,7 +152,7 @@ function Search() {
           </Box>
 
           <Box>
-            <Select placeholder="Liên quan">{buildRelevantSearch()}</Select>
+            <Select placeholder="Sắp xếp">{buildRelevantSearch()}</Select>
           </Box>
         </div>
         <div className="search-content">

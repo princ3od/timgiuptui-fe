@@ -9,7 +9,7 @@ interface Article  {
     thumbnail: string;
     date: string;
     relatedArticles: Array<Article>;
-    timeToRead: number;
+    timeReadMinutes: number;
 }
 
 export default Article;

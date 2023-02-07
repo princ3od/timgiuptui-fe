@@ -1,6 +1,7 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
-import React from "react";
+import React from 'react';
+
+import { SearchIcon } from '@chakra-ui/icons';
+import { InputGroup, InputLeftElement, Input } from '@chakra-ui/react';
 
 interface Props {
   onSearchTextChange: (searchText: string) => void;
@@ -16,7 +17,7 @@ const SearchBar = (pageProps: Props) => {
       </InputLeftElement>
       <Input
         type="search"
-        placeholder="Enter search text here.."
+        placeholder="Nhập tin bạn muốn tìm kiếm..."
         size="lg"
         defaultValue={pageProps.initSearchText}
         onChange={(event) => pageProps.onSearchTextChange(event.target.value)}

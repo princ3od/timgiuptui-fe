@@ -57,7 +57,7 @@ const ArticleCard = (pageProps: Props) => {
                   fill="#484848"
                 />
               </svg>
-              <h4>Xem tin ({article.timeToRead ?? 1} phút đọc)</h4>
+              <h4>Xem tin ({article.timeReadMinutes ?? 1} phút đọc)</h4>
             </div>
 
             <div className="expandable-area-right-content">

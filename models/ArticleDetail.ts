@@ -1,19 +1,19 @@
 
 interface ArticleDetail  {
-    id: String;
-    accessedDate: String;
-    author: String;
-    content: String;
-    date: String;
-    description: String;
-    domain: String;
-    readTimeMinutes: Number;
+    id: string;
+    accessedDate: string;
+    author: string;
+    content: string;
+    date: string;
+    description: string;
+    domain: string;
+    readTimeMinutes: number;
     similarArticles: Array<ArticleDetail>;
-    source: String;
-    thumbnail: String;
-    title: String;
-    topic: Array<String>;
-    url: String;
+    source: string;
+    thumbnail: string;
+    title: string;
+    topic: Array<string>;
+    url: string;
 
 }
 
