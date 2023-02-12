@@ -4,11 +4,12 @@ import { useRouter } from 'next/router';
 
 import { Button, Container } from '@chakra-ui/react';
 import { throttle } from 'lodash';
+import { NextPage } from 'next';
 
 import SearchBar from '@components/search';
 import SearchService from 'app/apis/SearchService';
 
-export default function Home() {
+const Home: NextPage = () => {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -42,14 +43,14 @@ export default function Home() {
   };
 
   return (
-    <Container as="main" textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
+    <Container textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
       <h1>Tìm giúp tui</h1>
       <form onSubmit={handleSubmit}>
         <SearchBar onChanged={handleOnChanged} suggestions={suggestions} />
-        <Button tabIndex={10} type="submit">
-          Tìm kiếm
-        </Button>
+        <Button type="submit">Tìm kiếm</Button>
       </form>
     </Container>
   );
-}
+};
+
+export default Home;

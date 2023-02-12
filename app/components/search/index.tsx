@@ -47,7 +47,7 @@ const SearchBar = (pageProps: Props) => {
       canMoveUp ? setValue(suggestions[selectedIndex]) : setValue(typedValue);
     }
     if (e.key === 'Enter' && selected > -1) {
-      alert(suggestions[selected]);
+      selectSuggestion(suggestions[selected]);
     }
   };
 
