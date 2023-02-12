@@ -1,19 +1,33 @@
 import { ApiEnpoints } from '@constants/api';
+import Article from 'models/Article';
+import { SearchParams, LooseParams } from 'models/SearchQuery';
 
 import HttpClient from './HttpClient';
 
-const limit = 50;
-const offset = 0;
-const sort_by = 'relevance';
-const order = 'desc';
-
 const SearchService = {
-  searchArticles: async (searchText: string) => {
+  searchArticles: async (q: string, searchParams: SearchParams) => {
+    const { sources, topics, ...rest } = searchParams;
+
+    const params: LooseParams = rest;
+
+    if (sources && sources.length > 0) {
+      params.sources = sources.join(',');
+    }
+
+    if (topics && topics.length > 0) {
+      params.topics = topics.join(',');
+    }
+
     try {
-      const query = `${searchText}&limit=${limit}&offset=${offset}&sort_by=${sort_by}&order=${order}`
-      const response = await HttpClient.get(ApiEnpoints.articles.search(query));
+      const response = await HttpClient.get(ApiEnpoints.articles.search, {
+        params: {
+          q,
+          ...params,
+        },
+      });
       const { data } = response;
-      return data;
+      const { results } = data;
+      return results as Article[];
     } catch (e) {
       return [];
     }
@@ -27,7 +41,7 @@ const SearchService = {
     } catch (e) {
       return [];
     }
-  }
+  },
 };
 
 export default SearchService;

@@ -1,13 +1,12 @@
 export const ApiEnpoints = {
-
-  articles:{
-    default: () => '/articles',
-    search: (query: string) => `/articles/search?q=${query}`,
+  articles: {
+    default: '/articles',
+    search: '/articles/search',
     autocomplete: (query: string) => `/articles/autocomplete?q=${query}`,
   },
-  topics:{
+  topics: {
     default: () => '/',
-    getTopic:() => '/topics',
-    getSources:() => '/editors',
-  }
+    getTopic: () => '/topics',
+    getSources: () => '/editors',
+  },
 };

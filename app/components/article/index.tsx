@@ -1,49 +1,46 @@
 import { useState } from 'react';
 
-import { Image } from '@chakra-ui/react';
+import { Box, Highlight, Image } from '@chakra-ui/react';
 
 import Article from 'models/Article';
 
 interface Props {
   article: Article;
+  query?: string;
 }
 
 const ArticleCard = (pageProps: Props) => {
-  const article: Article = pageProps.article;
+  const { article, query = '' } = pageProps;
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handelClickEvent = (
-  ) => {
+  const handelClickEvent = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
     <div className="article-container">
       <div className="left-content">
-        <Image
-          src={article.thumbnail}
-          alt="ArticleCard"
-          width={128}
-          fit="fill"
-        />
+        <Image src={article.thumbnail} alt="ArticleCard" width={128} fit="fill" />
       </div>
 
       <div className="right-content">
         <div className="article-scroll-area">
-          <h3>{article.title} </h3>
-          <p>{article.description}</p>
+          <Box as="h3" mb="2">
+            <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
+              {article.title}
+            </Highlight>
+          </Box>
+          <p>
+            <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
+              {article.description}
+            </Highlight>
+          </p>
         </div>
 
         <div className="expand-container" onClick={handelClickEvent}>
           <div className="expandable-area">
             <div className="expandable-area-left-content">
-              <svg
-                width="19"
-                height="18"
-                viewBox="0 0 19 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M10.3035 0L13.6964 3.293L6.48399 10.293L7.9409 11.707L15.1533 4.707L18.5463 8V0H10.3035Z"
                   fill="#484848"
@@ -58,26 +55,14 @@ const ArticleCard = (pageProps: Props) => {
 
             <div className="expandable-area-right-content">
               {isExpanded ? (
-                <svg
-                  width="16"
-                  height="10"
-                  viewBox="0 0 16 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M14.0179 0.00891113L8 6.02678L1.98213 0.00891113L0 1.99104L8 9.99104L16 1.99104L14.0179 0.00891113Z"
                     fill="#484848"
                   />
                 </svg>
               ) : (
-                <svg
-                  width="17"
-                  height="10"
-                  viewBox="0 0 17 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width="17" height="10" viewBox="0 0 17 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M2.83186 9.99106L8.84973 3.97319L14.8676 9.99106L16.8497 8.00893L8.84973 0.00893211L0.849732 8.00893L2.83186 9.99106Z"
                     fill="#484848"

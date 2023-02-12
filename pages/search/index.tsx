@@ -1,188 +1,263 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Button, Select } from '@chakra-ui/react';
+import { Box, Button, Flex, Select } from '@chakra-ui/react';
+import { MultiValue, Select as MultiSelect } from 'chakra-react-select';
+import { throttle } from 'lodash';
+import { NextPage } from 'next';
 
 import ArticleCard from '@components/article';
 import SearchBar from '@components/search';
 import PlatformService from 'app/apis/PlatformService';
 import SearchService from 'app/apis/SearchService';
 import Article from 'models/Article';
+import { Order, SortBy } from 'models/enum';
+import { SearchParams } from 'models/SearchQuery';
 import Source from 'models/Source';
 import Topic from 'models/Topic';
 
-const Search = () => {
+const SORT_BY_TYPES = [
+  {
+    name: 'Liên quan nhất',
+    value: 'relevance',
+  },
+  {
+    name: 'Mới nhất',
+    value: 'newest',
+  },
+  {
+    name: 'Cũ nhất',
+    value: 'oldest',
+  },
+];
+
+const Search: NextPage = () => {
   const router = useRouter();
-  const { searchText } = router.query;
-  const [searchTextState, setSearchText] = useState<string>(searchText as string);
+
+  const [query, setQuery] = useState<string>('');
+  const [searchParmas, setSearchParams] = useState<SearchParams>({
+    sort_by: SortBy.relevance,
+    order: Order.desc,
+  });
+  const [sortBy, setSortBy] = useState<'relevance' | 'newest' | 'oldest'>('relevance');
+  const [routerReady, setRouterReady] = useState<boolean>(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [allTopics, setAllTopics] = useState<Topic[]>([]);
+  const [allSouces, setAllSources] = useState<Source[]>([]);
 
-  const [page, setPage] = useState(1);
-  const pageLimit = 5;
-  const articlePerPage = 10;
-  const [topics, setTopics] = useState<Topic[]>([]);
-  const [source, setSource] = useState<Source[]>([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const throttledSeach = useCallback(
+    throttle(async (query: string) => {
+      try {
+        const articles = await SearchService.searchArticles(query, searchParmas);
+        setArticles(articles);
+      } catch (e) {
+        console.log(e);
+      }
+    }, 1400),
+    [],
+  );
 
   useEffect(() => {
-    const getSource = async () => {
-      const res = await PlatformService.getSources();
-      setSource(res);
+    const fetchTopics = async () => {
+      const topics = await PlatformService.getTopics();
+      setAllTopics(topics);
     };
-
-    const getTopic = async () => {
-      const res = await PlatformService.getTopics();
-      setTopics(res);
+    const fetchSources = async () => {
+      const sources = await PlatformService.getSources();
+      setAllSources(sources);
     };
-
-    getSource();
-    getTopic();
+    fetchTopics();
+    fetchSources();
   }, []);
 
   useEffect(() => {
-    const getArticles = async () => {
-      const res = await SearchService.searchArticles(searchTextState as string);
-      const { results, hasMoreArticle } = res;
-      if (hasMore != hasMoreArticle) {
-        setHasMore(hasMoreArticle);
-      }
-      setArticles((results ?? []) as Article[]);
+    if (!router.isReady) return;
+    const { q, order, sort_by = SortBy.relevance, sources, topics, offset, limit } = router.query;
+    setQuery(q as string);
+    const hasFilterTopic = topics && (topics as string).split(',').length > 0;
+    const hasFilterSource = sources && (sources as string).split(',').length > 0;
+    const validTopics =
+      hasFilterTopic && (topics as string).split(',').filter((topic) => allTopics.find((t) => t.id === topic));
+    const validSources =
+      hasFilterSource && (sources as string).split(',').filter((source) => allSouces.find((s) => s.id === source));
+    const params: SearchParams = {
+      order: order as Order,
+      sort_by: sort_by as SortBy,
+      sources: validSources as string[],
+      topics: validTopics as string[],
+      offset: offset ? parseInt(offset as string, 10) : undefined,
+      limit: limit ? parseInt(limit as string, 10) : undefined,
     };
-    getArticles();
-  }, [searchTextState, hasMore]);
+    setSearchParams(params);
+    setRouterReady(true);
+    const sort =sort_by === SortBy.relevance ? 'relevance' : order === Order.desc ? 'newest' : 'oldest';
+    setSortBy(sort);
+  }, [allSouces, allTopics, router.isReady, router.query]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [page]);
-
-  const sourcesOptionBuilder = (sources: Source[]) => {
-    const sourcesOption: string[] = [];
-    sources.forEach((source) => {
-      if (!sourcesOption.includes(source.name)) {
-        sourcesOption.push(source.name);
-      }
+  const onQueryChanged = (q: string) => {
+    setQuery(q);
+    router.replace({
+      pathname: '/search',
+      query: {
+        ...router.query,
+        q,
+      },
     });
-
-    return sourcesOption.map((source) => {
-      return (
-        <option value={source} key={source}>
-          {source}
-        </option>
-      );
-    });
-  };
-  const handleSearchTextChange = (newText: string) => {
-    if (newText !== searchTextState) {
-      setSearchText(newText);
-      setPage(1);
-      router.push(`/search?searchText=${newText}`);
+    if (q === '') {
+      setArticles([]);
+      return;
     }
+    throttledSeach(q);
   };
 
-  const topicsOptionBuilder = (topicArray: Topic[]) => {
-    const topicsOption: string[] = [];
-    topicArray.forEach((topic) => {
-      if (!topicsOption.includes(topic.name)) {
-        topicsOption.push(topic.name);
-      }
+  const onSortByChanged = async (sortBy: 'relevance' | 'newest' | 'oldest') => {
+    const updatedParams = {
+      sort_by: sortBy === 'relevance' ? SortBy.relevance : SortBy.date,
+      order: sortBy === 'oldest' ? Order.asc : Order.desc,
+    };
+    router.replace({
+      pathname: '/search',
+      query: {
+        ...router.query,
+        ...updatedParams,
+      },
     });
-    return topicsOption.map((topic) => {
-      return (
-        <option value={topic} key={topic}>
-          {topic}
-        </option>
-      );
+    setSearchParams({
+      ...searchParmas,
+      ...updatedParams,
     });
+    setSortBy(sortBy);
+    const articles = await SearchService.searchArticles(query, {
+      ...searchParmas,
+      ...updatedParams,
+    });
+    setArticles(articles);
   };
 
-  const buildPagination = (pageCount: number, pageLimit: number) => {
-    const pagination = [];
-    for (let i = 1; i <= pageLimit && i <= pageCount; i++) {
-      pagination.push(
-        <Button
-          colorScheme="black"
-          size="md"
-          variant="outline"
-          className="button-page"
-          onClick={() => setPage(i)}
-          {...(i === page ? { backgroundColor: '#52b6e7' } : {})}
-        >
-          <h3>{i}</h3>
-        </Button>,
-      );
-    }
-    return pagination;
-  };
-  const buildRelevantSearch = () => {
-    const relevantSearch: string[] = ['Liên quan', 'Mới nhất ', 'Cũ nhất'];
-    return relevantSearch.map((search) => {
-      return (
-        <option key={search} value={search}>
-          {search}
-        </option>
-      );
+  const onFilterTopicChanged = async (
+    topics: MultiValue<{
+      value: string;
+      label: string | undefined;
+    }>,
+  ) => {
+    const topicIds = topics.map((topic) => topic.value);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { topics: queryTopics, ...queryParam } = router.query;
+    if (topicIds.length > 0) queryParam.topics = topicIds.join(',');
+    router.replace({
+      pathname: '/search',
+      query: {
+        ...queryParam,
+      },
     });
+    setSearchParams({
+      ...searchParmas,
+      topics: topicIds,
+    });
+    const articles = await SearchService.searchArticles(query, {
+      ...searchParmas,
+      topics: topicIds,
+    });
+    setArticles(articles);
   };
+
+  const onFilterSourceChanged = async (
+    sources: MultiValue<{
+      value: string;
+      label: string | undefined;
+    }>,
+  ) => {
+    const sourceIds = sources.map((source) => source.value);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { sources: querySources, ...queryParam } = router.query;
+    if (sourceIds.length > 0) queryParam.sources = sourceIds.join(',');
+    router.replace({
+      pathname: '/search',
+      query: {
+        ...queryParam,
+      },
+    });
+    setSearchParams({
+      ...searchParmas,
+      sources: sourceIds,
+    });
+    const articles = await SearchService.searchArticles(query, {
+      ...searchParmas,
+      sources: sourceIds,
+    });
+    setArticles(articles);
+  };
+
+  const showResult = query !== '' && articles.length > 0;
 
   return (
     <div className="page-container">
       <div className="content-container">
         <h1 className="search-title">Tìm giúp tui</h1>
         <div className="search-container">
-          <SearchBar onChanged={handleSearchTextChange} initSearchText={searchText as string}></SearchBar>
-          <Button size="md" ml="32px">
-            <h3>Tìm kiếm</h3>
-          </Button>
+          {routerReady && <SearchBar onChanged={onQueryChanged} initialQuery={query} />}
+          <Button ml="28px">Tìm kiếm</Button>
         </div>
 
-        <div className="filter-container">
-          <Box display="flex">
-            <Select placeholder="Nguồn báo">{sourcesOptionBuilder(source)}</Select>
-            <Box w="19px"></Box>
-            <Select placeholder="Chủ đề">{topicsOptionBuilder(topics)}</Select>
+        <Flex justifyContent="space-between">
+          <Box display="flex" gap="4" flexGrow="1" mr="8">
+            <Box flex="0.5">
+              <MultiSelect
+                placeholder="Chủ đề"
+                value={
+                  searchParmas.topics &&
+                  searchParmas.topics?.map((topic) => ({
+                    value: topic,
+                    label: allTopics.find((t) => t.id === topic)?.name,
+                  }))
+                }
+                options={allTopics.map((topic) => ({ value: topic.id, label: topic.name }))}
+                onChange={(topics) => onFilterTopicChanged(topics)}
+                isMulti
+                useBasicStyles
+              />
+            </Box>
+            <Box flex="0.5">
+              <MultiSelect
+                placeholder="Nguồn báo"
+                value={
+                  searchParmas.sources &&
+                  searchParmas.sources?.map((source) => ({
+                    value: source,
+                    label: allSouces.find((s) => s.id === source)?.name,
+                  }))
+                }
+                options={allSouces.map((source) => ({ value: source.id, label: source.name }))}
+                onChange={(sources) => onFilterSourceChanged(sources)}
+                isMulti
+                useBasicStyles
+              />
+            </Box>
           </Box>
 
           <Box>
-            <Select placeholder="Sắp xếp">{buildRelevantSearch()}</Select>
+            <Select
+              value={sortBy}
+              onChange={(e) => onSortByChanged(e.target.value as 'relevance' | 'newest' | 'oldest')}
+            >
+              {SORT_BY_TYPES.map(({ value, name }) => (
+                <option key={value} value={value}>
+                  {name}
+                </option>
+              ))}
+            </Select>
           </Box>
-        </div>
+        </Flex>
         <div className="search-content">
-          {articles.slice((page - 1) * articlePerPage, page * articlePerPage).map((article) => {
-            return <ArticleCard article={article} key={`${article.id}`}></ArticleCard>;
-          })}
-        </div>
-
-        <div className="pagination">
-          <Button
-            onClick={() => {
-              if (page > 1) {
-                setPage(page - 1);
-              }
-            }}
-          >
-            <ChevronLeftIcon />
-          </Button>
-          {buildPagination(articles.length / articlePerPage, pageLimit)}
-          <Button
-            onClick={() => {
-              if (page < articles.length / articlePerPage) {
-                setPage(page + 1);
-              }
-            }}
-          >
-            <ChevronRightIcon />
-          </Button>
+          {showResult &&
+            articles.map((article) => <ArticleCard query={query} article={article} key={`${article.id}`} />)}
         </div>
       </div>
     </div>
   );
-};
-
-Search.getInitialProps = async (ctx: { query: { searchText: string } }) => {
-  const { searchText } = ctx.query;
-  return { searchText };
 };
 
 export default Search;

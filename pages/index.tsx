@@ -22,7 +22,7 @@ export default function Home() {
       } catch (e) {
         console.log(e);
       }
-    }, 1200),
+    }, 1000),
     [],
   );
 
@@ -36,7 +36,8 @@ export default function Home() {
     throttledSuggestions(searchText);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
     router.push(`/search?q=${query}`);
   };
 
@@ -44,7 +45,7 @@ export default function Home() {
     <Container as="main" textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
       <h1>Tìm giúp tui</h1>
       <form onSubmit={handleSubmit}>
-        <SearchBar onChanged={handleOnChanged} onSubmitted={handleSubmit} suggestions={suggestions} />
+        <SearchBar onChanged={handleOnChanged} suggestions={suggestions} />
         <Button tabIndex={10} type="submit">
           Tìm kiếm
         </Button>

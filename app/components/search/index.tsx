@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/router';
+
 import { SearchIcon } from '@chakra-ui/icons';
 import { InputGroup, InputLeftElement, Input, Box, Highlight } from '@chakra-ui/react';
 
 interface Props {
-  initSearchText?: string;
+  initialQuery?: string;
   suggestions?: string[];
   onChanged: (searchText: string, suggest?: boolean) => void;
-  onSubmitted?: (searchText: string) => void;
 }
 
 const SearchBar = (pageProps: Props) => {
-  const { suggestions = [], onChanged, onSubmitted } = pageProps;
+  const router = useRouter();
+  const { suggestions = [], onChanged, initialQuery } = pageProps;
+
   const [selected, setSelected] = useState<number>(-1);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>(initialQuery ?? '');
   const [typedValue, setTypedValue] = useState<string>('');
 
   useEffect(() => {
@@ -49,7 +52,7 @@ const SearchBar = (pageProps: Props) => {
   };
 
   const selectSuggestion = (suggestion: string) => {
-    onSubmitted && onSubmitted(suggestion);
+    router.push(`/search?q=${suggestion}`);
   };
 
   const showSuggestions = suggestions.length > 0 && value.length > 0;
@@ -76,7 +79,6 @@ const SearchBar = (pageProps: Props) => {
         height="48px"
         borderBottom="1px solid #E2E8F0"
         borderRadius="8px"
-        defaultValue={pageProps.initSearchText}
         onChange={handleChanged}
         onKeyDown={handleKeyDown}
       />
