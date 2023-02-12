@@ -21,7 +21,7 @@ const SearchService = {
 
   getSuggestions: async (query: string) => {
     try {
-      const response = await HttpClient.get(ApiEnpoints.articles.search(query));
+      const response = await HttpClient.get(ApiEnpoints.articles.autocomplete(query));
       const { data } = response;
       return data as string[];
     } catch (e) {

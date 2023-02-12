@@ -1,28 +1,54 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { Button } from '@chakra-ui/react';
+import { Button, Container } from '@chakra-ui/react';
+import { throttle } from 'lodash';
 
 import SearchBar from '@components/search';
+import SearchService from 'app/apis/SearchService';
 
 export default function Home() {
   const router = useRouter();
-  const [searchText, setSearchText] = useState('');
-  const handleSearch = (e: any) => {
-    e.preventDefault();
-    router.push(`/search?searchText=${searchText}`);
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const throttledSuggestions = useCallback(
+    throttle(async (query: string) => {
+      try {
+        const res = await SearchService.getSuggestions(query);
+        setSuggestions(res);
+      } catch (e) {
+        console.log(e);
+      }
+    }, 1200),
+    [],
+  );
+
+  const handleOnChanged = (searchText: string, suggest?: boolean) => {
+    setQuery(searchText);
+    if (searchText.length === 0) {
+      setSuggestions([]);
+      return;
+    }
+    if (!suggest) return;
+    throttledSuggestions(searchText);
+  };
+
+  const handleSubmit = () => {
+    router.push(`/search?q=${query}`);
   };
 
   return (
-    <div className="center-box">
+    <Container as="main" textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
       <h1>Tìm giúp tui</h1>
-      <form onSubmit={handleSearch}>
-        <SearchBar onSearchTextChange={setSearchText} />
-        <Button colorScheme="black" size="md" variant="outline" className="button-find" type="submit">
+      <form onSubmit={handleSubmit}>
+        <SearchBar onChanged={handleOnChanged} onSubmitted={handleSubmit} suggestions={suggestions} />
+        <Button tabIndex={10} type="submit">
           Tìm kiếm
         </Button>
       </form>
-    </div>
+    </Container>
   );
 }

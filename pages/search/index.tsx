@@ -131,8 +131,8 @@ const Search = () => {
       <div className="content-container">
         <h1 className="search-title">Tìm giúp tui</h1>
         <div className="search-container">
-          <SearchBar onSearchTextChange={handleSearchTextChange} initSearchText={searchText as string}></SearchBar>
-          <Button colorScheme="black" size="md" variant="none" className="button-find" ml="32px">
+          <SearchBar onChanged={handleSearchTextChange} initSearchText={searchText as string}></SearchBar>
+          <Button size="md" ml="32px">
             <h3>Tìm kiếm</h3>
           </Button>
         </div>

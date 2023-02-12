@@ -1,45 +1,32 @@
-
-
-.center-box {
-  text-align: center;
-  margin-left: 35%;
-  margin-right: 35%;
-  margin-top: 20%;
-}
-
 .button-find {
   width: auto;
   height: 50px;
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
   padding: 21px 77px;
-  
 }
 
 .button-find:hover {
   background-color: #cdcdcd;
   color: white;
-
 }
 
-.search-title{
+.search-title {
   text-align: left;
 }
 
-.search-container{
+.search-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
 
-.page-container{
+.page-container {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
-.filter-container{
+.filter-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -47,7 +34,7 @@
   height: 100%;
 }
 
-.article-container{
+.article-container {
   margin-top: 20px;
   max-width: 882px;
   border-radius: 16px;
@@ -56,51 +43,46 @@
   display: flex;
   gap: 16px;
   justify-content: center;
-  align-items: top;
 }
 
-
-.left-content{
+.left-content {
   height: 128px;
   min-width: 128px;
 }
 
-.expand-container{
+.expand-container {
   display: inline-block;
-  margin-top: 17px; 
-  gap: 20px ;
+  margin-top: 17px;
+  gap: 20px;
 }
 
-.expandable-area{
+.expandable-area {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: end ;
+  align-items: flex-end;
   gap: 8px;
   cursor: pointer;
   min-width: 679px;
 }
 
-.expandable-area-left-content{
+.expandable-area-left-content {
   display: inline-flex;
   gap: 16px;
-  align-items: end ;
+  align-items: flex-end;
 }
 
-
-
-.article-scroll-area{
+.article-scroll-area {
   overflow-y: scroll;
   max-height: 153px;
-
 }
 
-.search-content{
+.search-content {
   min-width: 855px;
   padding-bottom: 24px;
 }
 
-.pagination{
+.pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,12 +90,10 @@
   gap: 14px;
 }
 
-
-.expanded-content h2{
+.expanded-content h2 {
   font-size: 16px;
   font-weight: 700;
   line-height: 21px;
   margin-top: 16px;
   margin-bottom: 16px;
 }
-
