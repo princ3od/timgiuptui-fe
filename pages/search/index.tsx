@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { Box, Button, Container, Flex, Select, SlideFade } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Select, Skeleton, SlideFade } from '@chakra-ui/react';
 import { MultiValue, Select as MultiSelect } from 'chakra-react-select';
 import { throttle } from 'lodash';
 import { NextPage } from 'next';
@@ -87,7 +87,6 @@ const Search: NextPage = () => {
   useEffect(() => {
     if (!router.isReady || allSouces.length === 0 || allTopics.length === 0) return;
     const { q, order, sort_by, sources, topics, offset, limit } = router.query;
-    console.log('router.query', router.query);
     const hasFilterTopic = topics && (topics as string).split(',').length >= 0;
     const hasFilterSource = sources && (sources as string).split(',').length >= 0;
     const validTopics =
@@ -135,7 +134,11 @@ const Search: NextPage = () => {
 
   const onQueryChanged = (q: string) => {
     if (q === '') setArticles([]);
-    setSearchParams({ q });
+    const params: LooseParams = { q };
+    const { order, sort_by } = searchParmas;
+    if (order) params.order = order;
+    if (sort_by) params.sort_by = sort_by;
+    setSearchParams(params as SearchParams);
   };
 
   const onSortByChanged = async (sortBy: 'relevance' | 'newest' | 'oldest') => {
@@ -159,7 +162,7 @@ const Search: NextPage = () => {
     const topicIds = topics.map((topic) => topic.value);
     setSearchParams((params) => ({
       ...params,
-      topics: topicIds,
+      topics: topicIds.length > 0 ? topicIds : undefined,
     }));
   };
 
@@ -172,7 +175,7 @@ const Search: NextPage = () => {
     const sourceIds = sources.map((source) => source.value);
     setSearchParams({
       ...searchParmas,
-      sources: sourceIds,
+      sources: sourceIds.length > 0 ? sourceIds : undefined,
     });
   };
 
@@ -194,7 +197,9 @@ const Search: NextPage = () => {
     <Container maxWidth="4xl">
       <Logo />
       <div className="search-container">
-        {routerReady && <SearchBar onChanged={onQueryChanged} initialQuery={searchParmas.q} />}
+        <Skeleton isLoaded={routerReady} w="100%" height="48px" borderRadius="8px" my="5">
+          <SearchBar onChanged={onQueryChanged} initialQuery={searchParmas.q} disabled={!routerReady} />
+        </Skeleton>
         <Button ml="28px" isLoading={isLoading}>
           Tìm kiếm
         </Button>

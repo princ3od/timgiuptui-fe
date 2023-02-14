@@ -45,12 +45,12 @@ const Home: NextPage = () => {
 
   return (
     <Container textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
-      <Box width="100%" display="flex" justifyContent="center">
+      <Box width="100%" display="flex" justifyContent="center" mb="5">
         <Logo width={256} height={100} />
       </Box>
       <Box as="form" onSubmit={handleSubmit}>
         <SearchBar onChanged={handleOnChanged} suggestions={suggestions} />
-        <Button type="submit">Tìm kiếm</Button>
+        <Button mt="5" type="submit">Tìm kiếm</Button>
       </Box>
     </Container>
   );

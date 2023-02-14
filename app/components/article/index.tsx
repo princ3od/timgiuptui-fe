@@ -55,7 +55,9 @@ const ArticleCard = (pageProps: Props) => {
                   fill="#484848"
                 />
               </svg>
-              <h4>Xem tin ({article.timeReadMinutes ?? 1} phút đọc)</h4>
+              <a href={article.url} target="_blank" rel="noreferrer">
+                <h4>Xem tin</h4>
+              </a>
             </div>
           </div>
         </div>

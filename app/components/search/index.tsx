@@ -9,11 +9,12 @@ interface Props {
   initialQuery?: string;
   suggestions?: string[];
   onChanged: (searchText: string, suggest?: boolean) => void;
+  disabled?: boolean;
 }
 
 const SearchBar = (pageProps: Props) => {
   const router = useRouter();
-  const { suggestions = [], onChanged, initialQuery } = pageProps;
+  const { suggestions = [], onChanged, initialQuery, disabled } = pageProps;
 
   const [selected, setSelected] = useState<number>(-1);
   const [value, setValue] = useState<string>(initialQuery ?? '');
@@ -64,7 +65,6 @@ const SearchBar = (pageProps: Props) => {
 
   return (
     <InputGroup
-      my="20px"
       className="search-bar"
       flexDirection="column"
       borderRadius="8px"
@@ -86,6 +86,7 @@ const SearchBar = (pageProps: Props) => {
         borderRadius="8px"
         onChange={handleChanged}
         onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
       {showSuggestions &&
         suggestions.map((suggestion, index) => {
