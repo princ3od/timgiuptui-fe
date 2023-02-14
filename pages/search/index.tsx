@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { Box, Button, Container, Divider, Flex, Select, SlideFade } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, Select, SlideFade } from '@chakra-ui/react';
 import { MultiValue, Select as MultiSelect } from 'chakra-react-select';
 import { throttle } from 'lodash';
 import { NextPage } from 'next';
@@ -10,7 +10,9 @@ import { NextPage } from 'next';
 import ArticleCard from '@components/article';
 import ArticleLoading from '@components/ArticleLoading';
 import Logo from '@components/Logo';
+import NoMoreResult from '@components/NoMoreResult';
 import NoResult from '@components/NoResult';
+import ScrollToTopButton from '@components/ScrollToTopButton';
 import SearchBar from '@components/search';
 import PlatformService from 'app/apis/PlatformService';
 import SearchService from 'app/apis/SearchService';
@@ -278,14 +280,11 @@ const Search: NextPage = () => {
                 Xem thêm
               </Button>
             ) : (
-              <Flex my="8" justifyContent="center" align="center" opacity="0.5">
-                <Divider mx="4" />
-                <Box whiteSpace="nowrap">👻 Không còn kết quả nào</Box>
-                <Divider mx="4" />
-              </Flex>
+              <NoMoreResult />
             )}
           </SlideFade>
         </Box>
+        {showResult && <ScrollToTopButton />}
       </div>
     </Container>
   );

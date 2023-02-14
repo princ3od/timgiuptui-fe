@@ -28,7 +28,7 @@ const ArticleCard = (pageProps: Props) => {
         <div>
           <Box as="h3" mb="2" noOfLines={2}>
             <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
-              {article.title}
+              {article.title.length > 100 ? `${article.title.substring(0, 100)}...` : article.title}
             </Highlight>
           </Box>
           <p
@@ -37,7 +37,7 @@ const ArticleCard = (pageProps: Props) => {
             }}
           >
             <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
-              {article.description}
+              {article.description.length > 200 ? `${article.description.substring(0, 200)}...` : article.description}
             </Highlight>
           </p>
         </div>
