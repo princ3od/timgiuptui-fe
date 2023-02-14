@@ -18,8 +18,13 @@ const SearchBar = (pageProps: Props) => {
   const [selected, setSelected] = useState<number>(-1);
   const [value, setValue] = useState<string>(initialQuery ?? '');
   const [typedValue, setTypedValue] = useState<string>('');
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false);
+      return;
+    }
     onChanged(value, selected === -1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);

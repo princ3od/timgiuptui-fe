@@ -2,10 +2,11 @@ import React, { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { Button, Container } from '@chakra-ui/react';
+import { Box, Button, Container } from '@chakra-ui/react';
 import { throttle } from 'lodash';
 import { NextPage } from 'next';
 
+import Logo from '@components/Logo';
 import SearchBar from '@components/search';
 import SearchService from 'app/apis/SearchService';
 
@@ -44,11 +45,13 @@ const Home: NextPage = () => {
 
   return (
     <Container textAlign="center" maxWidth="2xl" mt="25vh" height="100vh">
-      <h1>Tìm giúp tui</h1>
-      <form onSubmit={handleSubmit}>
+      <Box width="100%" display="flex" justifyContent="center">
+        <Logo width={256} height={100} />
+      </Box>
+      <Box as="form" onSubmit={handleSubmit}>
         <SearchBar onChanged={handleOnChanged} suggestions={suggestions} />
         <Button type="submit">Tìm kiếm</Button>
-      </form>
+      </Box>
     </Container>
   );
 };

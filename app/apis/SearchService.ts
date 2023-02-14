@@ -1,11 +1,11 @@
 import { ApiEnpoints } from '@constants/api';
-import Article from 'models/Article';
 import { SearchParams, LooseParams } from 'models/SearchQuery';
+import { SearchResult } from 'models/SearchResult';
 
 import HttpClient from './HttpClient';
 
 const SearchService = {
-  searchArticles: async (q: string, searchParams: SearchParams) => {
+  searchArticles: async (searchParams: SearchParams) => {
     const { sources, topics, ...rest } = searchParams;
 
     const params: LooseParams = rest;
@@ -21,15 +21,17 @@ const SearchService = {
     try {
       const response = await HttpClient.get(ApiEnpoints.articles.search, {
         params: {
-          q,
           ...params,
         },
       });
       const { data } = response;
-      const { results } = data;
-      return results as Article[];
+      return data as SearchResult;
     } catch (e) {
-      return [];
+      return {
+        count: 0,
+        results: [],
+        has_more: false,
+      } as SearchResult;
     }
   },
 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
-import { Box, Highlight, Image } from '@chakra-ui/react';
+import { Box, Highlight } from '@chakra-ui/react';
 
+import ShimmerImage from '@components/ShimmerImage';
 import Article from 'models/Article';
 
 interface Props {
@@ -20,17 +21,21 @@ const ArticleCard = (pageProps: Props) => {
   return (
     <div className="article-container">
       <div className="left-content">
-        <Image src={article.thumbnail} alt="ArticleCard" width={128} fit="fill" />
+        <ShimmerImage src={article.thumbnail} alt="ArticleCard" w="100%" h="100%" borderRadius="8px" />
       </div>
 
       <div className="right-content">
-        <div className="article-scroll-area">
-          <Box as="h3" mb="2">
+        <div>
+          <Box as="h3" mb="2" noOfLines={2}>
             <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
               {article.title}
             </Highlight>
           </Box>
-          <p>
+          <p
+            style={{
+              maxLines: 3,
+            }}
+          >
             <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
               {article.description}
             </Highlight>
@@ -51,24 +56,6 @@ const ArticleCard = (pageProps: Props) => {
                 />
               </svg>
               <h4>Xem tin ({article.timeReadMinutes ?? 1} phút đọc)</h4>
-            </div>
-
-            <div className="expandable-area-right-content">
-              {isExpanded ? (
-                <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M14.0179 0.00891113L8 6.02678L1.98213 0.00891113L0 1.99104L8 9.99104L16 1.99104L14.0179 0.00891113Z"
-                    fill="#484848"
-                  />
-                </svg>
-              ) : (
-                <svg width="17" height="10" viewBox="0 0 17 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M2.83186 9.99106L8.84973 3.97319L14.8676 9.99106L16.8497 8.00893L8.84973 0.00893211L0.849732 8.00893L2.83186 9.99106Z"
-                    fill="#484848"
-                  />
-                </svg>
-              )}
             </div>
           </div>
         </div>

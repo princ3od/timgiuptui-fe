@@ -7,7 +7,12 @@ const nextConfig = {
     dirs: ['app'],
   },
   images: {
-    domains: ['firebasestorage.googleapis.com', 'source.unsplash.com', 'storage.googleapis.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   experimental: {
     appDir: false,

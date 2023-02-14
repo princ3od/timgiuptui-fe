@@ -1,0 +1,16 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.99999999999977 40" width="94.99999999999977" height="40">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+    </style>
+  </defs>
+  <g transform="translate(10 10) rotate(0 37.499999999999886 10)"><text x="37.5" y="14" font-family="Virgil, Segoe UI Emoji" font-size="16px" fill="#000000" text-anchor="middle" style="white-space: pre;" direction="ltr">timgiuptui</text></g></svg>

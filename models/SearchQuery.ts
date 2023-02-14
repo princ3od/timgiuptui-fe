@@ -1,6 +1,7 @@
 import { Order, SortBy } from './enum';
 
 export interface SearchParams {
+    q: string;
     limit?: number;
     offset?: number;
     order?: Order;
