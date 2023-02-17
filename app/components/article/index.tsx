@@ -1,22 +1,27 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 
-import { Box, Highlight } from '@chakra-ui/react';
+import { Box, Highlight, Tooltip } from '@chakra-ui/react';
 
 import ShimmerImage from '@components/ShimmerImage';
+import { formatRelativeDateTime } from '@utils/index';
 import Article from 'models/Article';
+import Source from 'models/Source';
+import Topic from 'models/Topic';
 
 interface Props {
   article: Article;
+  source?: Source;
+  topic?: Topic;
   query?: string;
 }
 
 const ArticleCard = (pageProps: Props) => {
-  const { article, query = '' } = pageProps;
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { article, query = '', source, topic } = pageProps;
 
-  const handelClickEvent = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const date = useMemo(() => {
+    const date = new Date(article.date);
+    return formatRelativeDateTime(date);
+  }, [article.date]);
 
   return (
     <div className="article-container">
@@ -26,6 +31,12 @@ const ArticleCard = (pageProps: Props) => {
 
       <div className="right-content">
         <div>
+          <Box as="h4" mb="2" justifyContent="space-between" display="flex" alignItems="center">
+            {`${source?.name} - ${topic?.name}`}
+            <Tooltip label={new Date(article.date).toLocaleString('vi')} aria-label="A tooltip" placement="top">
+              <span>{date}</span>
+            </Tooltip>
+          </Box>
           <Box as="h3" mb="2" noOfLines={2}>
             <Highlight styles={{ px: '0.5', py: '1', bg: 'yellow.100' }} query={query}>
               {article.title.length > 100 ? `${article.title.substring(0, 100)}...` : article.title}
@@ -42,7 +53,7 @@ const ArticleCard = (pageProps: Props) => {
           </p>
         </div>
 
-        <div className="expand-container" onClick={handelClickEvent}>
+        <Box className="expand-container">
           <div className="expandable-area">
             <div className="expandable-area-left-content">
               <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,27 +67,11 @@ const ArticleCard = (pageProps: Props) => {
                 />
               </svg>
               <a href={article.url} target="_blank" rel="noreferrer">
-                <h4>Xem tin</h4>
+                <Box>Xem tin</Box>
               </a>
             </div>
           </div>
-        </div>
-
-        {isExpanded && (
-          <div className="expanded-content">
-            <h2>Tin tức liên quan</h2>
-            <div className="related-article">
-              {article.relatedArticles?.map((relatedArticle) => {
-                return (
-                  <>
-                    <h1>{relatedArticle.title}</h1>
-                    <ArticleCard article={relatedArticle}></ArticleCard>
-                  </>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        </Box>
       </div>
     </div>
   );

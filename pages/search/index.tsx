@@ -279,7 +279,13 @@ const Search: NextPage = () => {
               key={`${article.id}`}
               transition={{ enter: { duration: 0.2, delay: (index % 10) * 0.18 } }}
             >
-              <ArticleCard query={searchParmas.q} article={article} key={`${article.id}`} />
+              <ArticleCard
+                query={searchParmas.q}
+                article={article}
+                key={`${article.id}`}
+                source={allSouces.find((s) => s.id === article.source)}
+                topic={allTopics.find((t) => t.id === article.topic)}
+              />
             </SlideFade>
           ))}
           <SlideFade unmountOnExit in={isLoading || noResult} offsetY="20px">
