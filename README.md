@@ -1,5 +1,8 @@
 # timgiuptui
 
+<img src="./public/android-chrome-96x96.png" alt="timgiuptui"
+style="background-color: #fff; border-radius: 16px" width="96" height="96" />
+
 Search Vietnamese news
 
 ## Demo
